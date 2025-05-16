@@ -179,12 +179,9 @@
 					class="rounded-lg shadow-lg aspect-square w-auto max-h-[360px]"
 				/>
 			</div>
-			<a
-				href="/"
-				class="inline-block px-6 py-3 rounded-lg text-white font-bold text-lg bg-gradient-to-r from-pink-600 via-red-500 to-yellow-400 shadow-md hover:brightness-110 transition-all"
+			<Link href={croppedImageWithFrame} download="profile.png" class="w-full text-center"
+				>Download</Link
 			>
-				Download
-			</a>
 
 			<Button class="w-full text-center" variant="outlined" on:click={recropImage}
 				>Re-crop image</Button
