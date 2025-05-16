@@ -17,8 +17,13 @@
 	let zoom = 1;
 	let files: FileList;
 	let pixelCrop = { x: 0, y: 0, width: 0, height: 0 };
-	let branch: Branch = Branch.PROGRAMMING;
+	let branch: Branch = Branch.SPECIAL;
 	let removeBg = false; // <-- เพิ่มตัวแปรสำหรับ checkbox
+	let removeBGStatus = false; // <-- เพิ่มตัวแปรสำหรับสถานะการลบพื้นหลัง
+	let uploaded = false;
+	let processedImage: string;
+	let processedImageWithBg = ''; // Store original image
+	let processedImageNoBg = ''; // Store processed image without background
 
 	// Update the image data when a new file is selected
 	function onFileSelected() {
@@ -32,6 +37,12 @@
 			// Reset the crop
 			croppedImage = null;
 			croppedImageWithFrame = null;
+
+			removeBGStatus = false;
+			uploaded = true;
+
+			processedImageWithBg = ''; // Store original image
+			processedImageNoBg = ''; // Store processed image without background
 		}
 	}
 
@@ -39,17 +50,28 @@
 		pixelCrop = e.detail.pixels;
 	}
 
-	async function cropImage(
-		image: string,
-		pixelCrop: { x: number; y: number; width: number; height: number }
-	) {
-		let processedImage = image;
+	async function handleRemoveBackground() {
+		if (!uploaded) return;
 
 		if (removeBg) {
-			// ลบพื้นหลัง
-			const blob = await fetch(image).then((res) => res.blob());
-			const result = await removeBackground(blob);
-			processedImage = URL.createObjectURL(result);
+			if (processedImageNoBg) {
+				// Reuse cached no-background image
+				processedImage = processedImageNoBg;
+			} else {
+				// Process new image
+				removeBGStatus = true;
+				const blob = await fetch(image).then((res) => res.blob());
+				const result = await removeBackground(blob);
+				if (result instanceof Blob) {
+					processedImageNoBg = URL.createObjectURL(result);
+					processedImage = processedImageNoBg;
+					removeBGStatus = false;
+				}
+			}
+		} else {
+			// Use original image
+			processedImageWithBg = processedImageWithBg || image;
+			processedImage = processedImageWithBg;
 		}
 
 		const newImage = await getCroppedImg(processedImage, pixelCrop);
@@ -57,6 +79,20 @@
 			croppedImage = newImage;
 			croppedImageWithFrame = await frameImage(croppedImage, branch);
 		}
+	}
+	async function cropImage(
+		image: string,
+		pixelCrop: { x: number; y: number; width: number; height: number }
+	) {
+		let processedImage = image;
+
+		const newImage = await getCroppedImg(processedImage, pixelCrop);
+		if (newImage) {
+			croppedImage = newImage;
+			croppedImageWithFrame = await frameImage(croppedImage, branch);
+		}
+
+		handleRemoveBackground();
 	}
 
 	async function frameImage(image: string, branch: Branch) {
@@ -97,10 +133,28 @@
 		<h1 class="font-bold text-4xl text-center">Profile Frame</h1>
 		<p>Suggested profile size: 1280 x 1280</p>
 	</div>
-	<label class="flex items-center gap-2">
-		<input type="checkbox" bind:checked={removeBg} />
-		Remove Background
+	<label class="flex items-center gap-3 cursor-pointer select-none">
+		{#if removeBGStatus}
+			<div class="w-4 h-4 border-2 border-gray-300 rounded-full animate-spin" />
+			<h1>Removing Background</h1>
+		{/if}
+		<div class="flex gap-2 items-center">
+			<div class="relative">
+				<input
+					type="checkbox"
+					bind:checked={removeBg}
+					on:change={handleRemoveBackground}
+					class="sr-only peer"
+				/>
+				<div class="w-11 h-6 bg-red-500 peer-checked:bg-green-500 transition-colors duration-300" />
+				<div
+					class="absolute left-1 top-1 w-4 h-4 bg-white transition-transform duration-300 peer-checked:translate-x-5"
+				/>
+			</div>
+			<span class="text-sm text-gray-800">Remove Background</span>
+		</div>
 	</label>
+
 	<div class="flex flex-col gap-2">
 		<BranchOption bind:value={branch} on:change={changeBranch} />
 		<InputFile id="file" type="file" accept="image/*" bind:files on:change={onFileSelected} />
@@ -117,11 +171,21 @@
 		<h1 class="font-bold text-4xl text-center">Result</h1>
 		{#if croppedImageWithFrame}
 			<div>
-				<img src={croppedImageWithFrame} alt="Cropped profile" width="400" height="400" />
+				<img
+					src={croppedImageWithFrame}
+					alt="Cropped profile"
+					width="400"
+					height="400"
+					class="rounded-lg shadow-lg aspect-square w-auto max-h-[360px]"
+				/>
 			</div>
-			<Link href={croppedImageWithFrame} download="profile.png" class="w-full text-center"
-				>Download</Link
+			<a
+				href="/"
+				class="inline-block px-6 py-3 rounded-lg text-white font-bold text-lg bg-gradient-to-r from-pink-600 via-red-500 to-yellow-400 shadow-md hover:brightness-110 transition-all"
 			>
+				Download
+			</a>
+
 			<Button class="w-full text-center" variant="outlined" on:click={recropImage}
 				>Re-crop image</Button
 			>

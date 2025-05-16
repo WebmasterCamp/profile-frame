@@ -23,6 +23,7 @@
 	)}
 	bind:this={select}
 >
+	<option value="SP">YWC20</option>
 	<option value="CT">Web Content</option>
 	<option value="MK">Web Marketing</option>
 	<option value="PG">Web Programming</option>

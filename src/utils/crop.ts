@@ -3,7 +3,13 @@ import CTSrc from '../lib/assets/YWC20/CT.png';
 import DSScr from '../lib/assets/YWC20/DS.png';
 import MKSrc from '../lib/assets/YWC20/MK.png';
 import PGSrc from '../lib/assets/YWC20/PG.png';
-import BGSrc from '../lib/assets/BG.png';
+import SPSrc from '../lib/assets/YWC20/SP.png';
+import BGSrc from '../lib/assets/YWC20/SPBG.png';
+import CTBG from '../lib/assets/YWC20/CTBG.png';
+import DSBG from '../lib/assets/YWC20/DSBG.png';
+import MKBG from '../lib/assets/YWC20/MKBG.png';
+import PGBG from '../lib/assets/YWC20/PGBG.png';
+
 import resizeImageData from 'resize-image-data';
 
 const DEFAULT_WIDTH = 1440;
@@ -20,10 +26,29 @@ async function selectImageFromBranch(branch: Branch) {
 			return await createImage(DSScr);
 		case Branch.CONTENT:
 			return await createImage(CTSrc);
+		case Branch.SPECIAL:
+			return await createImage(SPSrc);
 		default:
-			return await createImage(CTSrc);
+			return await createImage(SPSrc);
 	}
 }
+function selectBackgroundFromBranch(branch: Branch): string {
+	switch (branch) {
+		case Branch.MARKETING:
+			return MKBG;
+		case Branch.PROGRAMMING:
+			return PGBG;
+		case Branch.DESIGN:
+			return DSBG;
+		case Branch.CONTENT:
+			return CTBG;
+		case Branch.SPECIAL:
+			return BGSrc;
+		default:
+			return BGSrc; // fallback
+	}
+}
+
 
 export function createImage(url: string): Promise<HTMLImageElement> {
 	return new Promise((resolve, reject) => {
@@ -148,7 +173,8 @@ export async function addFrame(
 	const [image, badge, background] = await Promise.all([
 		createImage(imageSrc),
 		selectImageFromBranch(branch),
-		createImage(BGSrc)
+		createImage(selectBackgroundFromBranch(branch))
+
 	]);
 
 	// Preoare background
