@@ -3,12 +3,11 @@
 	import getCroppedImg, { addFrame, createImage } from '../utils/crop';
 	import Button from '../components/Button.svelte';
 	import InputFile from '../components/InputFile.svelte';
-	import Link from '../components/Link.svelte';
-	import BranchOption from '../components/BranchOption.svelte';
 	import { Branch } from '$lib/constants/branch';
 	import PreviewSrc from '$lib/assets/preview.png';
 	import { onMount } from 'svelte';
 	import { removeBackground } from '@imgly/background-removal';
+	import reuploadSrc from '$lib/assets/reupload.svg';
 
 	let image = '';
 	let croppedImage: string | null = null;
@@ -18,14 +17,14 @@
 	let files: FileList;
 	let pixelCrop = { x: 0, y: 0, width: 0, height: 0 };
 	let branch: Branch = Branch.SPECIAL;
-	let removeBg = false; // <-- เพิ่มตัวแปรสำหรับ checkbox
-	let removeBGStatus = false; // <-- เพิ่มตัวแปรสำหรับสถานะการลบพื้นหลัง
+	let removeBg = false;
+	let removeBGStatus = false;
 	let uploaded = false;
 	let processedImage: string;
-	let processedImageWithBg = ''; // Store original image
-	let processedImageNoBg = ''; // Store processed image without background
+	let processedImageWithBg = '';
+	let processedImageNoBg = '';
+	let fileInputRef: HTMLInputElement;
 
-	// Update the image data when a new file is selected
 	function onFileSelected() {
 		if (files && files[0]) {
 			image = '';
@@ -34,15 +33,12 @@
 			reader.onload = () => {
 				image = reader.result as string;
 			};
-			// Reset the crop
 			croppedImage = null;
 			croppedImageWithFrame = null;
-
 			removeBGStatus = false;
 			uploaded = true;
-
-			processedImageWithBg = ''; // Store original image
-			processedImageNoBg = ''; // Store processed image without background
+			processedImageWithBg = '';
+			processedImageNoBg = '';
 		}
 	}
 
@@ -52,13 +48,10 @@
 
 	async function handleRemoveBackground() {
 		if (!uploaded) return;
-
 		if (removeBg) {
 			if (processedImageNoBg) {
-				// Reuse cached no-background image
 				processedImage = processedImageNoBg;
 			} else {
-				// Process new image
 				removeBGStatus = true;
 				const blob = await fetch(image).then((res) => res.blob());
 				const result = await removeBackground(blob);
@@ -69,7 +62,6 @@
 				}
 			}
 		} else {
-			// Use original image
 			processedImageWithBg = processedImageWithBg || image;
 			processedImage = processedImageWithBg;
 		}
@@ -80,18 +72,17 @@
 			croppedImageWithFrame = await frameImage(croppedImage, branch);
 		}
 	}
+
 	async function cropImage(
 		image: string,
 		pixelCrop: { x: number; y: number; width: number; height: number }
 	) {
 		let processedImage = image;
-
 		const newImage = await getCroppedImg(processedImage, pixelCrop);
 		if (newImage) {
 			croppedImage = newImage;
 			croppedImageWithFrame = await frameImage(croppedImage, branch);
 		}
-
 		handleRemoveBackground();
 	}
 
@@ -114,7 +105,10 @@
 		croppedImageWithFrame = null;
 	}
 
-	// Initialize the preview image
+	function triggerFileInput() {
+		fileInputRef?.click();
+	}
+
 	onMount(async () => {
 		const previewImage = await createImage(PreviewSrc);
 		const size = 400;
@@ -128,36 +122,109 @@
 	});
 </script>
 
-<main class="flex flex-col items-center justify-center w-full h-full gap-8 p-4 mt-10">
+<main class="flex flex-col items-center justify-center w-full h-full gap-4 p-4 mt-2">
 	<div>
-		<h1 class="font-bold text-4xl text-center">Profile Frame</h1>
-		<p>Suggested profile size: 1280 x 1280</p>
+		<img
+			src="https://ywc20.ywc.in.th/logo-ywc20-mono.png"
+			width="400"
+			height="400"
+			alt="ywc20"
+			class="h-20 w-auto my-4"
+		/>
 	</div>
-	<label class="flex items-center gap-3 cursor-pointer select-none">
-		{#if removeBGStatus}
-			<div class="w-4 h-4 border-2 border-gray-300 rounded-full animate-spin" />
-			<h1>Removing Background</h1>
-		{/if}
-		<div class="flex gap-2 items-center">
-			<div class="relative">
-				<input
-					type="checkbox"
-					bind:checked={removeBg}
-					on:change={handleRemoveBackground}
-					class="sr-only peer"
-				/>
-				<div class="w-11 h-6 bg-red-500 peer-checked:bg-green-500 transition-colors duration-300" />
-				<div
-					class="absolute left-1 top-1 w-4 h-4 bg-white transition-transform duration-300 peer-checked:translate-x-5"
-				/>
-			</div>
-			<span class="text-sm text-gray-800">Remove Background</span>
-		</div>
-	</label>
 
-	<div class="flex flex-col gap-2">
-		<BranchOption bind:value={branch} on:change={changeBranch} />
-		<InputFile id="file" type="file" accept="image/*" bind:files on:change={onFileSelected} />
+	<div class="flex flex-col gap-3 items-center">
+		{#if croppedImageWithFrame}
+			<div
+				class="relative img-container w-auto aspect-square max-h-[360px]"
+				on:click={triggerFileInput}
+			>
+				<img
+					src={croppedImageWithFrame}
+					alt="Cropped profile"
+					width="400"
+					height="400"
+					class="rounded-lg shadow-lg aspect-square w-auto max-h-[360px]"
+				/>
+				<div
+					class="hover-overlay text-center text-white text-lg font-semibold flex flex-col text-white"
+				>
+					<img src={reuploadSrc} alt="reupload" class="h-12 w-auto text-white [filter:invert(1)]" />
+					Upload Image
+				</div>
+			</div>
+
+			<label class="flex w-full items-center gap-3 cursor-pointer select-none">
+				{#if removeBGStatus}
+					<div class="w-4 h-4 border-2 border-gray-300 rounded-full animate-spin" />
+					<h1>Removing Background</h1>
+				{/if}
+				<div class="flex flex-col gap-2">
+					<span class="text-sm text-white">Remove Background</span>
+					<div class="relative">
+						<input
+							type="checkbox"
+							bind:checked={removeBg}
+							on:change={handleRemoveBackground}
+							class="sr-only peer"
+						/>
+						<div
+							class="w-11 h-6 bg-gray-500 peer-checked:bg-pink-500 transition-colors duration-300"
+						/>
+						<div
+							class="absolute left-1 top-1 w-4 h-4 bg-white transition-transform duration-300 peer-checked:translate-x-5"
+						/>
+					</div>
+				</div>
+			</label>
+			<div class="flex w-full flex-col gap-2">
+				<div class="flex gap-2 flex-col w-full">
+					<span class="text-sm text-white">Template</span>
+					<select bind:value={branch} on:change={changeBranch} class="w-full p-4 rounded-lg">
+						<option value="SP">YWC20</option>
+						<option value="PG">Web Programming</option>
+						<option value="CT">Web Content</option>
+						<option value="MK">Web Marketing</option>
+						<option value="DS">Web Design</option>
+					</select>
+				</div>
+
+				<div class="flex gap-2 flex-col w-full">
+					<!-- Hidden input used for reupload -->
+					<input
+						id="file"
+						type="file"
+						accept="image/*"
+						bind:files
+						bind:this={fileInputRef}
+						on:change={onFileSelected}
+						class="hidden"
+					/>
+				</div>
+
+				<div class="flex w-full justify-between">
+					<a
+						href={croppedImageWithFrame}
+						download="profile.png"
+						class="w-[160px] px-4 py-2 font-bold rounded-lg text-center bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white"
+						>Download</a
+					>
+
+					<button
+						class="p-[2px] rounded-lg bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500"
+						on:click={recropImage}
+					>
+						<div class="bg-[rgb(25,2,0)] text-white rounded-lg px-4 py-2 text-center w-[160px]">
+							Recrop-Image
+						</div>
+					</button>
+				</div>
+			</div>
+		{:else}
+			<div class="w-[400px] h-[400px] flex items-center justify-center bg-slate-100">
+				<h1 class="text-lg">Loading...</h1>
+			</div>
+		{/if}
 	</div>
 
 	{#if image && !croppedImage}
@@ -166,30 +233,24 @@
 			<Button on:click={() => cropImage(image, pixelCrop)}>Crop image</Button>
 		</div>
 	{/if}
-
-	<div class="flex flex-col gap-3 items-center">
-		<h1 class="font-bold text-4xl text-center">Result</h1>
-		{#if croppedImageWithFrame}
-			<div>
-				<img
-					src={croppedImageWithFrame}
-					alt="Cropped profile"
-					width="400"
-					height="400"
-					class="rounded-lg shadow-lg aspect-square w-auto max-h-[360px]"
-				/>
-			</div>
-			<Link href={croppedImageWithFrame} download="profile.png" class="w-full text-center"
-				>Download</Link
-			>
-
-			<Button class="w-full text-center" variant="outlined" on:click={recropImage}
-				>Re-crop image</Button
-			>
-		{:else}
-			<div class="w-[400px] h-[400px] flex items-center justify-center bg-slate-100">
-				<h1 class="text-lg">Loading...</h1>
-			</div>
-		{/if}
-	</div>
 </main>
+
+<style>
+	.hover-overlay {
+		position: absolute;
+		inset: 0;
+		background-color: rgba(0, 0, 0, 0.4);
+		color: white;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		opacity: 0;
+		transition: opacity 0.3s ease;
+		border-radius: 0.5rem;
+	}
+
+	.img-container:hover .hover-overlay {
+		opacity: 1;
+		cursor: pointer;
+	}
+</style>
