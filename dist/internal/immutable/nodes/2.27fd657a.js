@@ -1,0 +1,1 @@
+import{P as m}from"../chunks/2.2ddb58f2.js";export{m as component};
