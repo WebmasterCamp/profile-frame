@@ -8,6 +8,7 @@
 	import { Branch } from '$lib/constants/branch';
 	import PreviewSrc from '$lib/assets/preview.png';
 	import { onMount } from 'svelte';
+	import { removeBackground } from '@imgly/background-removal';
 
 	let image = '';
 	let croppedImage: string | null = null;
@@ -17,6 +18,7 @@
 	let files: FileList;
 	let pixelCrop = { x: 0, y: 0, width: 0, height: 0 };
 	let branch: Branch = Branch.PROGRAMMING;
+	let removeBg = false; // <-- เพิ่มตัวแปรสำหรับ checkbox
 
 	// Update the image data when a new file is selected
 	function onFileSelected() {
@@ -41,7 +43,16 @@
 		image: string,
 		pixelCrop: { x: number; y: number; width: number; height: number }
 	) {
-		const newImage = await getCroppedImg(image, pixelCrop);
+		let processedImage = image;
+
+		if (removeBg) {
+			// ลบพื้นหลัง
+			const blob = await fetch(image).then((res) => res.blob());
+			const result = await removeBackground(blob);
+			processedImage = URL.createObjectURL(result);
+		}
+
+		const newImage = await getCroppedImg(processedImage, pixelCrop);
 		if (newImage) {
 			croppedImage = newImage;
 			croppedImageWithFrame = await frameImage(croppedImage, branch);
@@ -70,7 +81,7 @@
 	// Initialize the preview image
 	onMount(async () => {
 		const previewImage = await createImage(PreviewSrc);
-		const size = 600;
+		const size = 400;
 		await cropImage(PreviewSrc, {
 			x: (previewImage.width - size) / 2,
 			y: (previewImage.height - size) / 2,
@@ -86,6 +97,10 @@
 		<h1 class="font-bold text-4xl text-center">Profile Frame</h1>
 		<p>Suggested profile size: 1280 x 1280</p>
 	</div>
+	<label class="flex items-center gap-2">
+		<input type="checkbox" bind:checked={removeBg} />
+		Remove Background
+	</label>
 	<div class="flex flex-col gap-2">
 		<BranchOption bind:value={branch} on:change={changeBranch} />
 		<InputFile id="file" type="file" accept="image/*" bind:files on:change={onFileSelected} />

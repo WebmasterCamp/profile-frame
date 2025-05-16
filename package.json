@@ -30,11 +30,13 @@
 		"svelte-preprocess": "^4.10.7",
 		"tailwindcss": "^3.1.5",
 		"tslib": "^2.4.1",
-		"typescript": "^5.0.0",
+		"typescript": "^4.9.5",
 		"vite": "^4.2.0"
 	},
 	"type": "module",
 	"dependencies": {
+		"@imgly/background-removal": "^1.6.0",
+		"onnxruntime-web": "^1.21.0-dev.20250206-d981b153d3",
 		"resize-image-data": "^0.3.1",
 		"svelte-easy-crop": "^2.0.1",
 		"tailwind-merge": "^1.13.0"

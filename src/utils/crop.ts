@@ -1,14 +1,14 @@
 import { Branch } from '$lib/constants/branch';
-import CTSrc from '../lib/assets/CT.png';
-import DSScr from '../lib/assets/DS.png';
-import MKSrc from '../lib/assets/MK.png';
-import PGSrc from '../lib/assets/PG.png';
+import CTSrc from '../lib/assets/YWC20/CT.png';
+import DSScr from '../lib/assets/YWC20/DS.png';
+import MKSrc from '../lib/assets/YWC20/MK.png';
+import PGSrc from '../lib/assets/YWC20/PG.png';
 import BGSrc from '../lib/assets/BG.png';
 import resizeImageData from 'resize-image-data';
 
 const DEFAULT_WIDTH = 1440;
 const DEFAULT_HEIGHT = 1440;
-const OFFSET = (1440 - 1280) / 2;
+const OFFSET = (1440 - 1280) / 2 * 0;
 
 async function selectImageFromBranch(branch: Branch) {
 	switch (branch) {
@@ -166,8 +166,8 @@ export async function addFrame(
 		image,
 		OFFSET,
 		OFFSET,
-		desiredSize.width - 2 * OFFSET,
-		desiredSize.height - 2 * OFFSET
+		desiredSize.width - 2 * OFFSET * 0,
+		desiredSize.height - 2 * OFFSET * 0
 	);
 	ctx.drawImage(badge, 0, 0, desiredSize.width, desiredSize.height);
 
