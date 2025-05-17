@@ -3,6 +3,7 @@
 	import getCroppedImg, { addFrame, createImage } from '../utils/crop';
 	import Button from '../components/Button.svelte';
 	import InputFile from '../components/InputFile.svelte';
+	import LoadingSrc from '$lib/assets/loading.svg';
 	import { Branch } from '$lib/constants/branch';
 	import PreviewSrc from '$lib/assets/preview.png';
 	import { onMount } from 'svelte';
@@ -146,6 +147,7 @@
 					height="400"
 					class="rounded-lg shadow-lg aspect-square w-auto max-h-[360px]"
 				/>
+
 				<div
 					class="hover-overlay text-center text-white text-lg font-semibold flex flex-col text-white"
 				>
@@ -155,25 +157,26 @@
 			</div>
 
 			<label class="flex w-full items-center gap-3 cursor-pointer select-none">
-				{#if removeBGStatus}
-					<div class="w-4 h-4 border-2 border-gray-300 rounded-full animate-spin" />
-					<h1>Removing Background</h1>
-				{/if}
 				<div class="flex flex-col gap-2">
 					<span class="text-sm text-white">Remove Background</span>
-					<div class="relative">
-						<input
-							type="checkbox"
-							bind:checked={removeBg}
-							on:change={handleRemoveBackground}
-							class="sr-only peer"
-						/>
-						<div
-							class="w-11 h-6 bg-gray-500 peer-checked:bg-pink-500 transition-colors duration-300"
-						/>
-						<div
-							class="absolute left-1 top-1 w-4 h-4 bg-white transition-transform duration-300 peer-checked:translate-x-5"
-						/>
+					<div class="flex items-center justify-between gap-2 w-full">
+						<div class="relative">
+							<input
+								type="checkbox"
+								bind:checked={removeBg}
+								on:change={handleRemoveBackground}
+								class="sr-only peer"
+							/>
+							<div
+								class="w-14 h-8 bg-gray-500 peer-checked:bg-pink-500 transition-colors duration-300"
+							/>
+							<div
+								class="absolute left-1 top-1 w-6 h-6 bg-white transition-transform duration-300 peer-checked:translate-x-5"
+							/>
+						</div>
+						{#if removeBGStatus}
+							<img src={LoadingSrc} alt="Loading" class="h-12 [filter:invert(1)] animate-spin" />
+						{/if}
 					</div>
 				</div>
 			</label>
