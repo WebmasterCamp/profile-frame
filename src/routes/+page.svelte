@@ -112,7 +112,7 @@
 
 	onMount(async () => {
 		const previewImage = await createImage(PreviewSrc);
-		const size = 400;
+		const size = 1440;
 		await cropImage(PreviewSrc, {
 			x: (previewImage.width - size) / 2,
 			y: (previewImage.height - size) / 2,
@@ -124,15 +124,7 @@
 </script>
 
 <main class="flex flex-col items-center justify-center w-full h-full gap-4 p-4 mt-2">
-	<div>
-		<img
-			src="https://ywc20.ywc.in.th/logo-ywc20-mono.png"
-			width="400"
-			height="400"
-			alt="ywc20"
-			class="h-20 w-auto my-4"
-		/>
-	</div>
+	<div class="h-[6vh]" />
 
 	<div class="flex flex-col gap-3 items-center">
 		{#if croppedImageWithFrame}
@@ -224,9 +216,7 @@
 				</div>
 			</div>
 		{:else}
-			<div class="w-[400px] h-[400px] flex items-center justify-center bg-slate-100">
-				<h1 class="text-lg">Loading...</h1>
-			</div>
+			<img src={LoadingSrc} alt="Loading" class="h-12 animate-spin [filter:invert(1)]" />
 		{/if}
 	</div>
 
