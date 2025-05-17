@@ -112,7 +112,7 @@
 
 	onMount(async () => {
 		const previewImage = await createImage(PreviewSrc);
-		const size = 1440;
+		const size = 1458;
 		await cropImage(PreviewSrc, {
 			x: (previewImage.width - size) / 2,
 			y: (previewImage.height - size) / 2,
