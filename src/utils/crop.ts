@@ -10,11 +10,32 @@ import DSBG from '../lib/assets/YWC20/DSBG.png';
 import MKBG from '../lib/assets/YWC20/MKBG.png';
 import PGBG from '../lib/assets/YWC20/PGBG.png';
 
+import YWC1 from '../lib/assets/ywc-reunion/1.png';
+import YWC2 from '../lib/assets/ywc-reunion/2.png';
+import YWC3 from '../lib/assets/ywc-reunion/3.png';
+import YWC4 from '../lib/assets/ywc-reunion/4.png';
+import YWC5 from '../lib/assets/ywc-reunion/5.png';
+import YWC6 from '../lib/assets/ywc-reunion/6.png';
+import YWC7 from '../lib/assets/ywc-reunion/7.png';
+import YWC8 from '../lib/assets/ywc-reunion/8.png';
+import YWC9 from '../lib/assets/ywc-reunion/9.png';
+import YWC10 from '../lib/assets/ywc-reunion/10.png';
+import YWC11 from '../lib/assets/ywc-reunion/11.png';
+import YWC12 from '../lib/assets/ywc-reunion/12.png';
+import YWC13 from '../lib/assets/ywc-reunion/13.png';
+import YWC14 from '../lib/assets/ywc-reunion/14.png';
+import YWC15 from '../lib/assets/ywc-reunion/15.png';
+import YWC16 from '../lib/assets/ywc-reunion/16.png';
+import YWC17 from '../lib/assets/ywc-reunion/17.png';
+import YWC18 from '../lib/assets/ywc-reunion/18.png';
+import YWC19 from '../lib/assets/ywc-reunion/19.png';
+import YWC20 from '../lib/assets/ywc-reunion/20.png';
+
 import resizeImageData from 'resize-image-data';
 
 const DEFAULT_WIDTH = 1440;
 const DEFAULT_HEIGHT = 1440;
-const OFFSET = (1440 - 1280) / 2 * 0;
+const OFFSET = ((1440 - 1280) / 2) * 0;
 
 async function selectImageFromBranch(branch: Branch) {
 	switch (branch) {
@@ -28,6 +49,46 @@ async function selectImageFromBranch(branch: Branch) {
 			return await createImage(CTSrc);
 		case Branch.SPECIAL:
 			return await createImage(SPSrc);
+		case Branch.YWC1:
+			return await createImage(YWC1);
+		case Branch.YWC2:
+			return await createImage(YWC2);
+		case Branch.YWC3:
+			return await createImage(YWC3);
+		case Branch.YWC4:
+			return await createImage(YWC4);
+		case Branch.YWC5:
+			return await createImage(YWC5);
+		case Branch.YWC6:
+			return await createImage(YWC6);
+		case Branch.YWC7:
+			return await createImage(YWC7);
+		case Branch.YWC8:
+			return await createImage(YWC8);
+		case Branch.YWC9:
+			return await createImage(YWC9);
+		case Branch.YWC10:
+			return await createImage(YWC10);
+		case Branch.YWC11:
+			return await createImage(YWC11);
+		case Branch.YWC12:
+			return await createImage(YWC12);
+		case Branch.YWC13:
+			return await createImage(YWC13);
+		case Branch.YWC14:
+			return await createImage(YWC14);
+		case Branch.YWC15:
+			return await createImage(YWC15);
+		case Branch.YWC16:
+			return await createImage(YWC16);
+		case Branch.YWC17:
+			return await createImage(YWC17);
+		case Branch.YWC18:
+			return await createImage(YWC18);
+		case Branch.YWC19:
+			return await createImage(YWC19);
+		case Branch.YWC20:
+			return await createImage(YWC20);
 		default:
 			return await createImage(SPSrc);
 	}
@@ -48,7 +109,6 @@ function selectBackgroundFromBranch(branch: Branch): string {
 			return BGSrc; // fallback
 	}
 }
-
 
 export function createImage(url: string): Promise<HTMLImageElement> {
 	return new Promise((resolve, reject) => {
@@ -174,7 +234,6 @@ export async function addFrame(
 		createImage(imageSrc),
 		selectImageFromBranch(branch),
 		createImage(selectBackgroundFromBranch(branch))
-
 	]);
 
 	// Preoare background

@@ -3,7 +3,26 @@ export const Branch = {
 	MARKETING: 'MK',
 	DESIGN: 'DS',
 	PROGRAMMING: 'PG',
-	CONTENT: 'CT'
-
+	CONTENT: 'CT',
+	YWC1: 'YWC1',
+	YWC2: 'YWC2',
+	YWC3: 'YWC3',
+	YWC4: 'YWC4',
+	YWC5: 'YWC5',
+	YWC6: 'YWC6',
+	YWC7: 'YWC7',
+	YWC8: 'YWC8',
+	YWC9: 'YWC9',
+	YWC10: 'YWC10',
+	YWC11: 'YWC11',
+	YWC12: 'YWC12',
+	YWC13: 'YWC13',
+	YWC14: 'YWC14',
+	YWC15: 'YWC15',
+	YWC16: 'YWC16',
+	YWC17: 'YWC17',
+	YWC18: 'YWC18',
+	YWC19: 'YWC19',
+	YWC20: 'YWC20'
 } as const;
 export type Branch = (typeof Branch)[keyof typeof Branch];

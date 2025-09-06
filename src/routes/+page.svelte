@@ -17,7 +17,7 @@
 	let zoom = 1;
 	let files: FileList;
 	let pixelCrop = { x: 0, y: 0, width: 0, height: 0 };
-	let branch: Branch = Branch.SPECIAL;
+	let branch: Branch = Branch.YWC1;
 	let removeBg = false;
 	let removeBGStatus = false;
 	let uploaded = false;
@@ -176,11 +176,31 @@
 				<div class="flex gap-2 flex-col w-full">
 					<span class="text-sm text-white">Template</span>
 					<select bind:value={branch} on:change={changeBranch} class="w-full p-4 rounded-lg">
-						<option value="SP">YWC20</option>
+						<option value="YWC1">YWC1</option>
+						<option value="YWC2">YWC2</option>
+						<option value="YWC3">YWC3</option>
+						<option value="YWC4">YWC4</option>
+						<option value="YWC5">YWC5</option>
+						<option value="YWC6">YWC6</option>
+						<option value="YWC7">YWC7</option>
+						<option value="YWC8">YWC8</option>
+						<option value="YWC9">YWC9</option>
+						<option value="YWC10">YWC10</option>
+						<option value="YWC11">YWC11</option>
+						<option value="YWC12">YWC12</option>
+						<option value="YWC13">YWC13</option>
+						<option value="YWC14">YWC14</option>
+						<option value="YWC15">YWC15</option>
+						<option value="YWC16">YWC16</option>
+						<option value="YWC17">YWC17</option>
+						<option value="YWC18">YWC18</option>
+						<option value="YWC19">YWC19</option>
+						<option value="YWC20">YWC20</option>
+						<!-- <option value="SP">YWC20</option>
 						<option value="PG">Web Programming</option>
 						<option value="CT">Web Content</option>
 						<option value="MK">Web Marketing</option>
-						<option value="DS">Web Design</option>
+						<option value="DS">Web Design</option> -->
 					</select>
 				</div>
 
