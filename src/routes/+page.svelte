@@ -20,6 +20,7 @@
 	let branch: Branch = Branch.YWC1;
 	let removeBg = false;
 	let removeBGStatus = false;
+	let enableRemoveBg = false;
 	let uploaded = false;
 	let processedImage: string;
 	let processedImageWithBg = '';
@@ -48,7 +49,7 @@
 	}
 
 	async function handleRemoveBackground() {
-		if (!uploaded) return;
+		if (!uploaded || !enableRemoveBg) return;
 		if (removeBg) {
 			if (processedImageNoBg) {
 				processedImage = processedImageNoBg;
@@ -147,31 +148,32 @@
 					Upload Image
 				</div>
 			</div>
-
-			<label class="flex w-full items-center gap-3 cursor-pointer select-none">
-				<div class="flex flex-col gap-2">
-					<span class="text-sm text-white">Remove Background</span>
-					<div class="flex items-center justify-between gap-2 w-full">
-						<div class="relative">
-							<input
-								type="checkbox"
-								bind:checked={removeBg}
-								on:change={handleRemoveBackground}
-								class="sr-only peer"
-							/>
-							<div
-								class="w-14 h-8 bg-gray-500 peer-checked:bg-pink-500 transition-colors duration-300"
-							/>
-							<div
-								class="absolute left-1 top-1 w-6 h-6 bg-white transition-transform duration-300 peer-checked:translate-x-5"
-							/>
+			{#if enableRemoveBg}
+				<label class="flex w-full items-center gap-3 cursor-pointer select-none">
+					<div class="flex flex-col gap-2">
+						<span class="text-sm text-white">Remove Background</span>
+						<div class="flex items-center justify-between gap-2 w-full">
+							<div class="relative">
+								<input
+									type="checkbox"
+									bind:checked={removeBg}
+									on:change={handleRemoveBackground}
+									class="sr-only peer"
+								/>
+								<div
+									class="w-14 h-8 bg-gray-500 peer-checked:bg-pink-500 transition-colors duration-300"
+								/>
+								<div
+									class="absolute left-1 top-1 w-6 h-6 bg-white transition-transform duration-300 peer-checked:translate-x-5"
+								/>
+							</div>
+							{#if removeBGStatus}
+								<img src={LoadingSrc} alt="Loading" class="h-12 [filter:invert(1)] animate-spin" />
+							{/if}
 						</div>
-						{#if removeBGStatus}
-							<img src={LoadingSrc} alt="Loading" class="h-12 [filter:invert(1)] animate-spin" />
-						{/if}
 					</div>
-				</div>
-			</label>
+				</label>
+			{/if}
 			<div class="flex w-full flex-col gap-2">
 				<div class="flex gap-2 flex-col w-full">
 					<span class="text-sm text-white">Template</span>
